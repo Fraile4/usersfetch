@@ -1,10 +1,12 @@
 let updateUser = (id) => {
     let row = document.getElementById(id);
-    let izena = row.children[1].children[0].value;
-    let abizena = row.children[2].children[0].value;
-    let email = row.children[3].children[0].value;
+    let avatar = row.children[1].children[0].value;
+    let izena = row.children[2].children[0].value;
+    let abizena = row.children[3].children[0].value;
+    let email = row.children[4].children[0].value;
     row.innerHTML = `
     <th scope="row">${id}</th>
+    <td><img src="/uploads/${avatar}" alt="avatar" width="50" height="50"></td>
     <td>${izena}</td>
     <td>${abizena}</td>
     <td>${email}</td>
@@ -12,6 +14,7 @@ let updateUser = (id) => {
     `;
 
     let user = {
+        avatar: avatar,
         izena: izena,
         abizena: abizena,
         id: id,
@@ -36,11 +39,13 @@ let updateUser = (id) => {
 
 let editUser = (id) => {
     let row = document.getElementById(id);
-    let izena = row.children[1].innerHTML;
-    let abizena = row.children[2].innerHTML;
-    let email = row.children[3].innerHTML;
+    let avatar = row.children[1].innerHTML;
+    let izena = row.children[2].innerHTML;
+    let abizena = row.children[3].innerHTML;
+    let email = row.children[4].innerHTML;
     row.innerHTML = `
     <th scope="row">${id}</th>
+    <td><input type="file" id="avatar" value="${avatar}"></td>
     <td><input type="text" id="izena" value="${izena}"></td>
     <td><input type="text" id="abizena" value="${abizena}"></td>
     <td><input type="text" id="email" value="${email}"></td>
@@ -58,6 +63,7 @@ let insertUser = (user) => {
   newRow.setAttribute("id", user._id);
   newRow.innerHTML = `
                 <th scope="row">${user._id}</th>
+                <td><img src="/uploads/${user.avatar}" alt="avatar" width="50" height="50"></td>
                 <td>${user.izena}</td>
                 <td>${user.abizena}</td>
                 <td>${user.email}</td>
@@ -89,19 +95,11 @@ document.addEventListener("DOMContentLoaded", function () {
   document.getElementById("formularioa").addEventListener("submit", (e) => {
     e.preventDefault();
     
-    let user = {
-        izena: e.target.izena.value,
-        abizena: e.target.abizena.value,
-        email: e.target.email.value
-    }
-
+    let user = new FormData(e.target);
   
     fetch("/users/new", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(user),
+      body: user
     })
       .then((response) => response.json())
       .then((data) => {
@@ -126,3 +124,4 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
 });
+
